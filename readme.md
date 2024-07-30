@@ -36,7 +36,7 @@ Führt die folgenden Aktionen aus:
 - SATP_STACK_SET <= E_STACK_PARAM_ID_MIOTY_NWKKEY <= \<networkKey\>
 - SATP_STACK_GET <= E_STACK_PARAM_ID_MIOTY_EUI64
 - SATP_STACK_GET <= E_STACK_PARAM_ID_MIOTY_SHORT_ADDR
-- \+  gleiche funktionalität wie **[params](#params)**
+- \+  gleiche Funktionalität wie **[params](#params)**
 
 ### send
 
