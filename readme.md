@@ -6,6 +6,26 @@
 
 Konsolendienstprogramm zum Konfigurieren des Sensors und zum Übertragen von Daten
 
+    miotysensor [--port PORT] {init,send} ...
+
+#### optionen
+
+##### --port
+
+>Serial Port
+>
+>unterstütyte Aufnahmetypen:
+>
+>- COM\<index\>
+>   - z.B. COM0
+>- \<index\>
+>   - z.B. 0
+>- /dev/\<name\>
+>   - z.B. /dev/ttyACM0
+>
+> Default Linux: /dev/ttyACM1
+> Default Windows: COM6
+
 ### miotysensor init
 
     miotysensor init <networkKey> [--txPower [TXPOWER]] [--miotyMode [MIOTYMODE]] [--miotyProfile [MIOTYPROFILE]]
