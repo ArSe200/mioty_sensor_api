@@ -8,6 +8,13 @@ import argparse
 BAUDRATE = 115200
 PORT = "COM6"
 
+# Really great job!!
+#
+# Possible improvements:
+# 1. add command line option for setting PORT. Baudrate can be fixed
+# 2. "init" always to be executed, must not be an option
+# In "satp_serial":
+#   Define "constant" variables for protocol specific values and use them (e.g. SATP_STACK_SET = 0x02)
 
 class MiotySensor:
     def __init__(self, baudarte, port):
