@@ -76,8 +76,8 @@ Get or set stack params
 
 #### optionen
 
-Um den Wert festlegen: --option Value
-Um den Wert zu erhalten: --option
+- Um den Wert festlegen: --option Value
+- Um den Wert zu erhalten: --option
 
 ---
 
