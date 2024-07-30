@@ -16,19 +16,19 @@ else:
 class MiotySensor:
     def __init__(self, baudarte, port):
         self.satp = SSATP(baudarte, port)
+        self.separator = "\n>   "
 
-    def initialize(self, nwkkey, tx_power, mioty_mode, mioty_profile):
-        separator = "\n>   "
-        print(separator, end="")
+    def initialize(self, nwkkey):
+        print(self.separator, end="")
         print("SATP_STACK_SELECT_STACK <- E_STACK_ID_MIOTY: ", end="")
         self._send_with_confirmation(SSATP.API_SATP_STACK_CMD, SSATP.SATP_STACK_SELECT_STACK, [SSATP.E_STACK_ID_MIOTY])
-        print(separator, end="")
+        print(self.separator, end="")
         print(
             "SATP_STACK_SET <- E_STACK_PARAM_ID_MIOTY_NWKKEY <- {}: ".format(nwkkey),
             end="",
         )
         self._send_with_confirmation(SSATP.API_SATP_STACK_CMD, SSATP.SATP_STACK_SET, [SSATP.E_STACK_PARAM_ID_MIOTY_NWKKEY] + self.hex_string2list(nwkkey))
-        print(separator, end="")
+        print(self.separator, end="")
         print("SATP_STACK_GET <- E_STACK_PARAM_ID_MIOTY_EUI64: ", end="")
         eui = self._send_with_confirmation(SSATP.API_SATP_STACK_CMD, SSATP.SATP_STACK_GET, [SSATP.E_STACK_PARAM_ID_MIOTY_EUI64])
         if eui:
@@ -42,7 +42,7 @@ class MiotySensor:
                     )
                 )
             )
-        print(separator, end="")
+        print(self.separator, end="")
         print("SATP_STACK_GET <- E_STACK_PARAM_ID_MIOTY_SHORT_ADDR: ", end="")
         short_addr = self._send_with_confirmation(SSATP.API_SATP_STACK_CMD, SSATP.SATP_STACK_GET, [SSATP.E_STACK_PARAM_ID_MIOTY_SHORT_ADDR])
         if short_addr:
@@ -56,69 +56,6 @@ class MiotySensor:
                     )
                 )
             )
-
-        if tx_power != None:
-            if type(tx_power) == bool:
-                print(separator, end="")
-                print("SATP_STACK_GET <- E_STACK_PARAM_ID_MIOTY_TX_POWER: ", end="")
-                tx_power_value = self._send_with_confirmation(SSATP.API_SATP_STACK_CMD, SSATP.SATP_STACK_GET, [SSATP.E_STACK_PARAM_ID_MIOTY_TX_POWER])
-                if tx_power_value:
-                    print(
-                        "      ⨽ TX_POWER: {} ({})".format(
-                            tx_power_value[0], hex(tx_power_value[0])
-                        )
-                    )
-            else:
-                print(separator, end="")
-                print(
-                    "SATP_STACK_SET <- E_STACK_PARAM_ID_MIOTY_TX_POWER <- {}: ".format(
-                        hex(tx_power)
-                    ),
-                    end="",
-                )
-                self._send_with_confirmation(SSATP.API_SATP_STACK_CMD, SSATP.SATP_STACK_SET, [SSATP.E_STACK_PARAM_ID_MIOTY_TX_POWER, tx_power])
-
-        if mioty_mode != None:
-            if type(mioty_mode) == bool:
-                print(separator, end="")
-                print("SATP_STACK_GET <- E_STACK_PARAM_ID_MIOTY_MODE: ", end="")
-                mioty_mode_value = self._send_with_confirmation(SSATP.API_SATP_STACK_CMD, SSATP.SATP_STACK_GET, [SSATP.E_STACK_PARAM_ID_MIOTY_MODE])
-                if mioty_mode_value:
-                    print(
-                        "      ⨽ MIOTY_MODE: {} ({})".format(
-                            mioty_mode_value[0], hex(mioty_mode_value[0])
-                        )
-                    )
-            else:
-                print(separator, end="")
-                print(
-                    "SATP_STACK_SET <- E_STACK_PARAM_ID_MIOTY_MODE <- {}: ".format(
-                        hex(mioty_mode)
-                    ),
-                    end="",
-                )
-                self._send_with_confirmation(SSATP.API_SATP_STACK_CMD, SSATP.SATP_STACK_SET, [SSATP.E_STACK_PARAM_ID_MIOTY_MODE, mioty_mode])
-
-        if mioty_profile != None:
-            if type(mioty_profile) == bool:
-                print(separator, end="")
-                print("SATP_STACK_GET <- E_STACK_PARAM_ID_MIOTY_PROFILE: ", end="")
-                mioty_profile_value = self._send_with_confirmation(SSATP.API_SATP_STACK_CMD, SSATP.SATP_STACK_GET, [SSATP.E_STACK_PARAM_ID_MIOTY_PROFILE])
-                if mioty_profile_value:
-                    print(
-                        "      ⨽ MIOTY_PROFILE: {} ({})".format(
-                            mioty_profile_value[0], hex(mioty_profile_value[0])
-                        )
-                    )
-            else:
-                print(separator, end="")
-                print(
-                    "SATP_STACK_SET <- E_STACK_PARAM_ID_MIOTY_PROFILE <- {}: ".format(
-                        hex(mioty_profile)
-                    ),
-                    end="",
-                )
-                self._send_with_confirmation(SSATP.API_SATP_STACK_CMD, SSATP.SATP_STACK_SET, [SSATP.E_STACK_PARAM_ID_MIOTY_PROFILE, mioty_profile])
 
     def send_data(self, data, timeout, period, save_data):
         if type(data) == bool:
@@ -137,16 +74,14 @@ class MiotySensor:
                 print(type(e).__name__)
 
         if data:
-            separator = "\n>   "
-
-            print(separator, end="")
+            print(self.separator, end="")
             print(
                 "SATP_STACK_SEND_PARAMS <- E_STACK_SEND_PARAM_ID_MIOTY_RX_WINDOW <- 0x01: ",
                 end="",
             )
             self._send_with_confirmation(SSATP.API_SATP_STACK_CMD, SSATP.SATP_STACK_SEND_PARAMS, [SSATP.E_STACK_SEND_PARAM_ID_MIOTY_RX_WINDOW, 0x01])
             
-            print(separator, end="")
+            print(self.separator, end="")
             print(
                 "SATP_STACK_NB_SEND <- {}: ".format(data),
                 end="",
@@ -154,7 +89,7 @@ class MiotySensor:
             self._send_with_confirmation(SSATP.API_SATP_STACK_CMD, SSATP.SATP_STACK_NB_SEND, self.hex_string2list(data))
             
             if timeout>0:
-                print(separator, end="")
+                print(self.separator, end="")
                 print(
                     "WAITING_FOR_INDICATION: ",
                     end="\r",
@@ -179,7 +114,7 @@ class MiotySensor:
                         )
                 if indication:
                     print()
-                    print(separator, end="")
+                    print(self.separator, end="")
                     print("SATP_STACK_RECEIVE: ", end="")
                     received_data = self._send_with_confirmation(SSATP.API_SATP_STACK_CMD, SSATP.SATP_STACK_RECEIVE)
                     if received_data:
@@ -198,6 +133,74 @@ class MiotySensor:
                                 )
                 else:
                     print(f"\r>   WAITING FOR INDICATION: TIMEOUT      " + " "*chek_times)
+
+    def get_set_params(self, tx_power, mioty_mode, mioty_profile):
+        if tx_power != None:
+            if type(tx_power) == bool:
+                print(self.separator, end="")
+                print("SATP_STACK_GET <- E_STACK_PARAM_ID_MIOTY_TX_POWER: ", end="")
+                u_tx_power_value = self._send_with_confirmation(SSATP.API_SATP_STACK_CMD, SSATP.SATP_STACK_GET, [SSATP.E_STACK_PARAM_ID_MIOTY_TX_POWER])[0]
+                if u_tx_power_value:
+                    if u_tx_power_value>127:
+                        s_tx_power_value = u_tx_power_value-256
+                    else:
+                        s_tx_power_value = u_tx_power_value
+                    print(
+                        "      ⨽ TX_POWER: {} ({})".format(
+                            s_tx_power_value, hex(u_tx_power_value)
+                        )
+                    )
+            else:
+                print(self.separator, end="")
+                print(
+                    "SATP_STACK_SET <- E_STACK_PARAM_ID_MIOTY_TX_POWER <- {}: ".format(
+                        hex(tx_power)
+                    ),
+                    end="",
+                )
+                self._send_with_confirmation(SSATP.API_SATP_STACK_CMD, SSATP.SATP_STACK_SET, [SSATP.E_STACK_PARAM_ID_MIOTY_TX_POWER, tx_power])
+
+        if mioty_mode != None:
+            if type(mioty_mode) == bool:
+                print(self.separator, end="")
+                print("SATP_STACK_GET <- E_STACK_PARAM_ID_MIOTY_MODE: ", end="")
+                mioty_mode_value = self._send_with_confirmation(SSATP.API_SATP_STACK_CMD, SSATP.SATP_STACK_GET, [SSATP.E_STACK_PARAM_ID_MIOTY_MODE])
+                if mioty_mode_value:
+                    print(
+                        "      ⨽ MIOTY_MODE: {} ({})".format(
+                            mioty_mode_value[0], hex(mioty_mode_value[0])
+                        )
+                    )
+            else:
+                print(self.separator, end="")
+                print(
+                    "SATP_STACK_SET <- E_STACK_PARAM_ID_MIOTY_MODE <- {}: ".format(
+                        hex(mioty_mode)
+                    ),
+                    end="",
+                )
+                self._send_with_confirmation(SSATP.API_SATP_STACK_CMD, SSATP.SATP_STACK_SET, [SSATP.E_STACK_PARAM_ID_MIOTY_MODE, mioty_mode])
+
+        if mioty_profile != None:
+            if type(mioty_profile) == bool:
+                print(self.separator, end="")
+                print("SATP_STACK_GET <- E_STACK_PARAM_ID_MIOTY_PROFILE: ", end="")
+                mioty_profile_value = self._send_with_confirmation(SSATP.API_SATP_STACK_CMD, SSATP.SATP_STACK_GET, [SSATP.E_STACK_PARAM_ID_MIOTY_PROFILE])
+                if mioty_profile_value:
+                    print(
+                        "      ⨽ MIOTY_PROFILE: {} ({})".format(
+                            mioty_profile_value[0], hex(mioty_profile_value[0])
+                        )
+                    )
+            else:
+                print(self.separator, end="")
+                print(
+                    "SATP_STACK_SET <- E_STACK_PARAM_ID_MIOTY_PROFILE <- {}: ".format(
+                        hex(mioty_profile)
+                    ),
+                    end="",
+                )
+                self._send_with_confirmation(SSATP.API_SATP_STACK_CMD, SSATP.SATP_STACK_SET, [SSATP.E_STACK_PARAM_ID_MIOTY_PROFILE, mioty_profile])
 
     def _send_with_confirmation(self, api_id, comand_id, parameter = []):
         self.satp.send_data(api_id, comand_id, parameter)
@@ -288,23 +291,23 @@ if __name__ == "__main__":
 
     subparses = parser.add_subparsers(dest="function", required=True)
 
-    parser_a = subparses.add_parser("init")
-    parser_a.add_argument("networkKey", type=NetworkKey)
-    parser_a.add_argument(
+    parser_init = subparses.add_parser("init")
+    parser_init.add_argument("networkKey", type=NetworkKey)
+    parser_init.add_argument(
         "--txPower",
         nargs="?",
         type=SignedByte,
         required=False,
         const=True,
     )
-    parser_a.add_argument(
+    parser_init.add_argument(
         "--miotyMode",
         nargs="?",
         type=MiotyMode,
         required=False,
         const=True,
     )
-    parser_a.add_argument(
+    parser_init.add_argument(
         "--miotyProfile",
         nargs="?",
         type=MiotyProfile,
@@ -312,17 +315,41 @@ if __name__ == "__main__":
         const=True,
     )
 
-    parser_b = subparses.add_parser("send")
-    parser_b.add_argument("--data", nargs="?", type=str, required=True, const=True,)
-    parser_b.add_argument("-t", "--timeout", type=float, required=False, default=30,)
-    parser_b.add_argument("-p", "--period", type=float, required=False, default=0.5,)
-    parser_b.add_argument("-ld", "--load_data",
+    parser_send = subparses.add_parser("send")
+    parser_send.add_argument("--data", nargs="?", type=str, required=True, const=True,)
+    parser_send.add_argument("-t", "--timeout", type=float, required=False, default=30,)
+    parser_send.add_argument("-p", "--period", type=float, required=False, default=0.5,)
+    parser_send.add_argument("-ld", "--load_data",
         required=False,
         action="store_true",
     )
-    parser_b.add_argument("-sd", "--save_data",
+    parser_send.add_argument("-sd", "--save_data",
         required=False,
         action="store_true",
+    )
+    
+    parser_params = subparses.add_parser("params")
+
+    parser_params.add_argument(
+        "--txPower",
+        nargs="?",
+        type=SignedByte,
+        required=False,
+        const=True,
+    )
+    parser_params.add_argument(
+        "--miotyMode",
+        nargs="?",
+        type=MiotyMode,
+        required=False,
+        const=True,
+    )
+    parser_params.add_argument(
+        "--miotyProfile",
+        nargs="?",
+        type=MiotyProfile,
+        required=False,
+        const=True,
     )
 
     console_args = parser.parse_args()
@@ -336,11 +363,17 @@ if __name__ == "__main__":
     sensor = MiotySensor(BAUDRATE, PORT)
 
     if console_args.function == "init":
-        sensor.initialize(
-            console_args.networkKey,
+        sensor.initialize(console_args.networkKey)
+        sensor.get_set_params(
             console_args.txPower,
             console_args.miotyMode,
             console_args.miotyProfile,
         )
     elif console_args.function == "send":
         sensor.send_data(console_args.data, console_args.timeout, console_args.period, console_args.save_data)
+    elif console_args.function == "params":
+        sensor.get_set_params(
+            console_args.txPower,
+            console_args.miotyMode,
+            console_args.miotyProfile,
+        )

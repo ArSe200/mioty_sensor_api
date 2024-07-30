@@ -6,7 +6,7 @@
 
 Konsolendienstprogramm zum Konfigurieren des Sensors und zum Übertragen von Daten
 
-    miotysensor [--port PORT] {init,send} ...
+    miotysensor [--port PORT] {init,send,params} ...
 
 #### optionen
 
@@ -26,9 +26,9 @@ Konsolendienstprogramm zum Konfigurieren des Sensors und zum Übertragen von Dat
 > Default Linux: /dev/ttyACM1
 > Default Windows: COM6
 
-### miotysensor init
+### init
 
-    miotysensor init <networkKey> [--txPower [TXPOWER]] [--miotyMode [MIOTYMODE]] [--miotyProfile [MIOTYPROFILE]]
+    init <networkKey> [--txPower [TXPOWER]] [--miotyMode [MIOTYMODE]] [--miotyProfile [MIOTYPROFILE]]
 
 Führt die folgenden Aktionen aus:
 
@@ -36,16 +36,12 @@ Führt die folgenden Aktionen aus:
 - SATP_STACK_SET <= E_STACK_PARAM_ID_MIOTY_NWKKEY <= \<networkKey\>
 - SATP_STACK_GET <= E_STACK_PARAM_ID_MIOTY_EUI64
 - SATP_STACK_GET <= E_STACK_PARAM_ID_MIOTY_SHORT_ADDR
+- \+  gleiche funktionalität wie **[params](#params)**
 
-#### optionen
+### send
 
-Um den Wert festlegen: --option Value
-Um den Wert zu erhalten: --option
-
-### miotysensor send
-
-    miotysensor send <--data [DATA]> [-t TIMEOUT] [-p PERIOD] [-ld] [-sd]
-    miotysensor send <--data [DATA]> [--timeout TIMEOUT] [--period PERIOD] [--save_data]
+    send <--data [DATA]> [-t TIMEOUT] [-p PERIOD] [-ld] [-sd]
+    send <--data [DATA]> [--timeout TIMEOUT] [--period PERIOD] [--save_data]
 
 Sendet daten und wartet auf Downlink-Daten
 
@@ -71,6 +67,17 @@ Sendet daten und wartet auf Downlink-Daten
 ##### --save_data (-sd)
 
 > die empfangenen Daten in einer Datei "data" speichen
+
+### params
+
+    params [--txPower [TXPOWER]] [--miotyMode [MIOTYMODE]] [--miotyProfile [MIOTYPROFILE]]
+
+Get or set stack params
+
+#### optionen
+
+Um den Wert festlegen: --option Value
+Um den Wert zu erhalten: --option
 
 ---
 
