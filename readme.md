@@ -126,9 +126,9 @@ Wartet auf eine Nachricht von MQTT und sendet RSSI über den Downlink-Kanal zur�
 
 Am Anfang des Scripts kann man mehrere Parameter konfigurieren
 
-**DEBUG** - Aktiviert oder deaktiviert die Konsolenausgabe
-**MQTT_IP** - MQTT Broker IP Adresse
-**MQTT_PORT** - MQTT Broker port
+- DEBUG - Aktiviert oder deaktiviert die Konsolenausgabe
+- MQTT_IP - MQTT Broker IP Adresse
+- MQTT_PORT - MQTT Broker port
 
 ### Abhängigkeiten
 
